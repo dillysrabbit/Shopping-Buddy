@@ -8,7 +8,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   background: #0e0e10; color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, sans-serif;
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 32px;
@@ -26,7 +26,7 @@ p { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 32px; text-al
 <div class="url" id="url-label"></div>
 <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
 <script>
-  var creationUrl = window.location.origin + window.location.pathname.replace(/install\.html$/, '') + '?v=1';
+  var creationUrl = 'https://your-domain.com/shopping-list/?v=9';
   document.getElementById('url-label').textContent = creationUrl;
 
   var qrData = JSON.stringify({
@@ -34,7 +34,7 @@ p { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 32px; text-al
     url: creationUrl,
     description: "Voice-powered shopping list for the Rabbit R1",
     iconUrl: "",
-    themeColor: "#FE5000"
+    themeColor: "#FDE047"
   });
 
   var qrCode = new QRCodeStyling({

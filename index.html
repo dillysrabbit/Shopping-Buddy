@@ -9,7 +9,7 @@
 body {
   width: 240px; height: 282px; overflow: hidden;
   background: #0e0e10; color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, sans-serif;
   display: flex; flex-direction: column;
   -webkit-user-select: none; user-select: none;
 }
@@ -21,15 +21,7 @@ body {
   flex-shrink: 0;
 }
 #brand { font-size: 10px; font-weight: 700; color: #FE5000; letter-spacing: 2px; text-transform: uppercase; }
-#header-right { display: flex; align-items: center; gap: 8px; }
 #item-count { font-size: 10px; color: rgba(255,255,255,0.3); }
-#add-btn {
-  width: 18px; height: 18px; border: 1px solid #FE5000; border-radius: 50%;
-  background: transparent; color: #FE5000; font-size: 14px; line-height: 1;
-  font-family: inherit; cursor: pointer; display: flex; align-items: center;
-  justify-content: center; padding: 0; -webkit-tap-highlight-color: transparent;
-}
-#add-btn:active { background: #FE5000; color: #0e0e10; }
 
 #status {
   padding: 0 12px; font-size: 10px; color: rgba(255,255,255,0.35);
@@ -66,7 +58,7 @@ body {
 #scrollbar { position: absolute; right: 3px; top: 4px; bottom: 4px; width: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; display: none; }
 #scroll-thumb { position: absolute; left: 0; width: 3px; background: #FE5000; border-radius: 2px; opacity: 0.7; }
 
-/* Edit / Add screen */
+/* Edit screen */
 #edit-screen {
   display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: #0e0e10; flex-direction: column; padding: 14px; z-index: 150;
@@ -99,10 +91,7 @@ body {
 
 <div id="header">
   <div id="brand">Shopping List</div>
-  <div id="header-right">
-    <div id="item-count"></div>
-    <button id="add-btn" aria-label="Add item" title="Add item">+</button>
-  </div>
+  <div id="item-count"></div>
 </div>
 <div id="status">Hold side button to add item</div>
 <div id="list-container">
@@ -112,7 +101,7 @@ body {
 
 <div id="edit-screen">
   <div id="edit-header">Edit Item</div>
-  <textarea id="edit-input" inputmode="text" autocomplete="off" autocapitalize="sentences"></textarea>
+  <textarea id="edit-input"></textarea>
   <div id="edit-actions">
     <button id="edit-cancel">Cancel</button>
     <button id="edit-save">Save</button>
@@ -128,7 +117,6 @@ var items = [];
 var scrollOffset = 0;
 var isListening = false;
 var editingId = null;
-var addingNew = false;
 
 // ── Storage ──────────────────────────────────────────────────────────────
 function saveItems() {
@@ -278,17 +266,14 @@ function deleteItem(id) {
   resetStatus();
 }
 
-// ── Edit / Add item (keyboard) ───────────────────────────────────────────
+// ── Edit item (keyboard) ─────────────────────────────────────────────────
 var $editScreen = document.getElementById('edit-screen');
 var $editInput = document.getElementById('edit-input');
-var $editHeader = document.getElementById('edit-header');
 
 function editItem(id) {
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === id) {
       editingId = id;
-      addingNew = false;
-      $editHeader.textContent = 'Edit Item';
       $editInput.value = items[i].text;
       $editScreen.classList.add('visible');
       $editInput.focus();
@@ -297,31 +282,15 @@ function editItem(id) {
   }
 }
 
-function openAddScreen() {
-  if (isListening || $editScreen.classList.contains('visible')) return;
-  editingId = null;
-  addingNew = true;
-  $editHeader.textContent = 'Add Item';
-  $editInput.value = '';
-  $editScreen.classList.add('visible');
-  $editInput.focus();
-}
-
 function closeEdit() {
   editingId = null;
-  addingNew = false;
   $editScreen.classList.remove('visible');
   $editInput.blur();
 }
 
 document.getElementById('edit-save').addEventListener('click', function() {
-  var text = $editInput.value.trim();
-  if (addingNew) {
-    closeEdit();
-    if (text) addItem(text);
-    return;
-  }
   if (!editingId) return;
+  var text = $editInput.value.trim();
   if (!text) { closeEdit(); return; }
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === editingId) { items[i].text = text; break; }
@@ -332,7 +301,6 @@ document.getElementById('edit-save').addEventListener('click', function() {
 });
 
 document.getElementById('edit-cancel').addEventListener('click', closeEdit);
-document.getElementById('add-btn').addEventListener('click', openAddScreen);
 
 // ── Status ───────────────────────────────────────────────────────────────
 var statusTimer = null;
@@ -386,18 +354,9 @@ window.addEventListener('scrollDown', function() {
 
 // ── Keyboard fallbacks ───────────────────────────────────────────────────
 document.addEventListener('keydown', function(e) {
-  if ($editScreen.classList.contains('visible')) {
-    if (e.key === 'Escape') { e.preventDefault(); closeEdit(); }
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      document.getElementById('edit-save').click();
-    }
-    return;
-  }
   if (e.key === ' ' && !e.repeat) window.dispatchEvent(new Event('longPressStart'));
   if (e.key === 'ArrowUp') window.dispatchEvent(new Event('scrollUp'));
   if (e.key === 'ArrowDown') window.dispatchEvent(new Event('scrollDown'));
-  if (e.key === 'n' || e.key === 'N') { e.preventDefault(); openAddScreen(); }
 });
 document.addEventListener('keyup', function(e) {
   if (e.key === ' ') window.dispatchEvent(new Event('longPressEnd'));
