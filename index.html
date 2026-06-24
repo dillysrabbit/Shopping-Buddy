@@ -248,6 +248,13 @@ function render() {
   });
 }
 
+function sortItems() {
+  items.sort(function(a, b) {
+    if (a.checked === b.checked) return 0;
+    return a.checked ? -1 : 1;
+  });
+}
+
 function toggleItem(id) {
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === id) {
@@ -256,6 +263,7 @@ function toggleItem(id) {
       break;
     }
   }
+  sortItems();
   saveItems(); render();
 }
 
@@ -318,8 +326,8 @@ function addItem(text) {
   text = normalizeTranscript((text || '').trim()).replace(/[.!?,]+$/, '');
   if (!text) { setStatus('Nothing heard \u2014 try again', false); resetStatus(); return; }
   text = text.charAt(0).toUpperCase() + text.slice(1);
-  items.unshift({ id: Date.now().toString(), text: text, checked: false, checkedAt: null });
-  scrollOffset = 0;
+  items.push({ id: Date.now().toString(), text: text, checked: false, checkedAt: null });
+  sortItems();
   saveItems(); render();
   setStatus('\u2713 ' + text, false);
   resetStatus();
@@ -368,6 +376,7 @@ setInterval(function() { if (purgeExpired()) { saveItems(); render(); } }, 5 * 6
 // ── Init ─────────────────────────────────────────────────────────────────
 loadItems();
 purgeExpired();
+sortItems();
 saveItems();
 render();
 </script>
