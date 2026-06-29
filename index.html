@@ -4,93 +4,158 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=240, initial-scale=1.0, user-scalable=no">
 <title>Shopping List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   width: 240px; height: 282px; overflow: hidden;
-  background: #0e0e10; color: #fff;
-  font-family: -apple-system, sans-serif;
+  background: #E7E4DE; color: #1B1A17;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   display: flex; flex-direction: column;
   -webkit-user-select: none; user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 #header {
-  padding: 8px 12px 6px;
+  padding: 12px 16px 10px;
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(254,80,0,0.25);
-  flex-shrink: 0;
+  border-bottom: 1px solid #C7C3BA;
+  flex-shrink: 0; height: 40px;
 }
-#brand { font-size: 10px; font-weight: 700; color: #FE5000; letter-spacing: 2px; text-transform: uppercase; }
-#item-count { font-size: 10px; color: rgba(255,255,255,0.3); }
+#brand {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: #8A867E;
+}
+#item-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: #8A867E;
+}
 
 #status {
-  padding: 0 12px; font-size: 10px; color: rgba(255,255,255,0.35);
-  text-align: center; flex-shrink: 0; height: 22px;
+  padding: 0 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: #8A867E;
+  text-align: center; flex-shrink: 0; height: 24px;
   display: flex; align-items: center; justify-content: center;
+  letter-spacing: .04em;
 }
-#status.listening { color: #FE5000; animation: pulse 0.8s ease infinite; }
+#status.listening { color: #D75A1E; animation: pulse 0.8s ease infinite; }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
 #list-container { flex: 1; overflow: hidden; position: relative; }
-#list { position: absolute; top: 0; left: 0; right: 0; transition: transform 0.12s ease; }
+#list {
+  position: absolute; top: 0; left: 0; right: 0;
+  transition: transform 200ms cubic-bezier(.4,0,.2,1);
+}
 
-.item { display: flex; align-items: center; padding: 0 12px 0 10px; height: 32px; gap: 10px; }
-.item.checked { opacity: 0.4; }
+.item {
+  display: flex; align-items: center;
+  padding: 0 16px; height: 32px; gap: 8px;
+  border-bottom: 1px solid #D7D4CC;
+}
+.item.checked { opacity: 0.45; }
 
 .checkbox {
-  width: 18px; height: 18px; border: 2px solid #FE5000; border-radius: 3px;
+  width: 16px; height: 16px;
+  border: 2px solid #1B1A17; border-radius: 2px;
   flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.12s; position: relative;
+  cursor: pointer;
+  transition: background 120ms cubic-bezier(.4,0,.2,1),
+              border-color 120ms cubic-bezier(.4,0,.2,1);
 }
-.item.checked .checkbox { background: #FE5000; }
+.item.checked .checkbox {
+  background: #D75A1E; border-color: #D75A1E;
+}
 .checkbox::after {
-  content: ''; display: none; width: 10px; height: 6px;
-  border-left: 2px solid #0e0e10; border-bottom: 2px solid #0e0e10;
+  content: ''; display: none;
+  width: 8px; height: 5px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
   transform: rotate(-45deg) translateY(-1px);
 }
 .item.checked .checkbox::after { display: block; }
-.item-text { font-size: 13px; color: #fff; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.item.checked .item-text { text-decoration: line-through; color: rgba(255,255,255,0.4); }
 
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 220px; gap: 10px; }
-.empty-text { font-size: 11px; color: rgba(255,255,255,0.2); text-align: center; line-height: 1.6; }
+.item-text {
+  font-size: 14px; font-weight: 400;
+  color: #1B1A17; flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.item.checked .item-text {
+  text-decoration: line-through;
+  color: #8A867E;
+}
 
-#scrollbar { position: absolute; right: 3px; top: 4px; bottom: 4px; width: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; display: none; }
-#scroll-thumb { position: absolute; left: 0; width: 3px; background: #FE5000; border-radius: 2px; opacity: 0.7; }
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 218px; gap: 12px;
+}
+.empty-icon {
+  width: 36px; height: 36px; opacity: 0.2;
+}
+.empty-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: #8A867E;
+  text-align: center; line-height: 1.6;
+  letter-spacing: .04em;
+}
+
+#scrollbar {
+  position: absolute; right: 4px; top: 4px; bottom: 4px;
+  width: 3px; background: #D7D4CC; border-radius: 2px; display: none;
+}
+#scroll-thumb {
+  position: absolute; left: 0; width: 3px;
+  background: #D75A1E; border-radius: 2px; opacity: 0.8;
+}
 
 /* Edit screen */
 #edit-screen {
   display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: #0e0e10; flex-direction: column; padding: 14px; z-index: 150;
+  background: #E7E4DE; flex-direction: column; padding: 16px; z-index: 150;
 }
 #edit-screen.visible { display: flex; }
 #edit-header {
-  font-size: 11px; font-weight: 700; color: #FE5000;
-  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; padding: 2px 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 600; color: #D75A1E;
+  text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 12px; padding: 2px 0;
 }
 #edit-input {
-  flex: 1; background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
-  color: #fff; font-size: 13px; font-family: inherit;
+  flex: 1; background: #F0EEE9;
+  border: 1px solid #C7C3BA; border-radius: 2px;
+  color: #1B1A17; font-size: 14px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   padding: 8px; resize: none; outline: none; line-height: 1.5;
 }
-#edit-input:focus { border-color: #FE5000; }
-#edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+#edit-input:focus { border-color: #D75A1E; }
+#edit-actions { display: flex; gap: 8px; margin-top: 12px; }
 #edit-actions button {
-  flex: 1; min-height: 36px; border: none; border-radius: 6px;
-  font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer;
+  flex: 1; min-height: 36px; border: none; border-radius: 2px;
+  font-size: 13px; font-weight: 600;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 120ms;
 }
 #edit-actions button:active { opacity: 0.7; }
-#edit-cancel { background: rgba(255,255,255,0.1); color: #fff; }
-#edit-save { background: #FE5000; color: #0e0e10; }
+#edit-cancel {
+  background: transparent; color: #1B1A17;
+  border: 1px solid #1B1A17;
+}
+#edit-save {
+  background: #D75A1E; color: #fff;
+}
 
 </style>
 </head>
 <body>
 
 <div id="header">
-  <div id="brand">Shopping List</div>
+  <div id="brand">Einkaufsliste</div>
   <div id="item-count"></div>
 </div>
 <div id="status">Hold side button to add item</div>
@@ -131,6 +196,14 @@ function purgeExpired() {
   return items.length !== before;
 }
 
+// ── Sort: checked first, unchecked last ─────────────────────────────────
+function sortItems() {
+  items.sort(function(a, b) {
+    if (a.checked === b.checked) return 0;
+    return a.checked ? -1 : 1;
+  });
+}
+
 // ── Transcript normalisation ─────────────────────────────────────────────
 var ORDINALS = [
   ['thirty first','31st'],['twenty ninth','29th'],['twenty eighth','28th'],
@@ -163,14 +236,14 @@ function render() {
   var scrollbar = document.getElementById('scrollbar');
 
   var unchecked = items.filter(function(i) { return !i.checked; }).length;
-  countEl.textContent = unchecked > 0 ? unchecked + ' left' : (items.length > 0 ? 'all done' : '');
+  countEl.textContent = unchecked > 0 ? unchecked + ' offen' : (items.length > 0 ? 'alles erledigt' : '');
 
   if (items.length === 0) {
     list.innerHTML = '<div class="empty-state">'
-      + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" style="opacity:0.15">'
-      + '<path d="M2 3h4l4 18h18l3-12H9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
-      + '<circle cx="14" cy="27" r="2" fill="white"/><circle cx="24" cy="27" r="2" fill="white"/></svg>'
-      + '<div class="empty-text">Your list is empty<br>Hold side button to add</div></div>';
+      + '<svg class="empty-icon" width="36" height="36" viewBox="0 0 36 36" fill="none">'
+      + '<path d="M2 3h4l4 18h18l3-12H9" stroke="#1B1A17" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '<circle cx="14" cy="27" r="2" fill="#1B1A17"/><circle cx="24" cy="27" r="2" fill="#1B1A17"/></svg>'
+      + '<div class="empty-text">Liste ist leer<br>Seitentaste halten zum Hinzufügen</div></div>';
     scrollbar.style.display = 'none';
     return;
   }
@@ -248,13 +321,6 @@ function render() {
   });
 }
 
-function sortItems() {
-  items.sort(function(a, b) {
-    if (a.checked === b.checked) return 0;
-    return a.checked ? -1 : 1;
-  });
-}
-
 function toggleItem(id) {
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === id) {
@@ -270,7 +336,7 @@ function toggleItem(id) {
 function deleteItem(id) {
   items = items.filter(function(i) { return i.id !== id; });
   saveItems(); render();
-  setStatus('Deleted', false);
+  setStatus('Gelöscht', false);
   resetStatus();
 }
 
@@ -324,12 +390,12 @@ function resetStatus() {
 // ── Add Item ─────────────────────────────────────────────────────────────
 function addItem(text) {
   text = normalizeTranscript((text || '').trim()).replace(/[.!?,]+$/, '');
-  if (!text) { setStatus('Nothing heard \u2014 try again', false); resetStatus(); return; }
+  if (!text) { setStatus('Nichts erkannt — nochmal', false); resetStatus(); return; }
   text = text.charAt(0).toUpperCase() + text.slice(1);
   items.push({ id: Date.now().toString(), text: text, checked: false, checkedAt: null });
   sortItems();
   saveItems(); render();
-  setStatus('\u2713 ' + text, false);
+  setStatus('✓ ' + text, false);
   resetStatus();
 }
 
@@ -339,14 +405,14 @@ window.onPluginMessage = function(data) {
   isListening = false;
   var text = (data.transcript || '').trim();
   if (text) addItem(text);
-  else { setStatus('Nothing heard \u2014 try again', false); resetStatus(); }
+  else { setStatus('Nichts erkannt — nochmal', false); resetStatus(); }
 };
 
 // ── R1 Events ────────────────────────────────────────────────────────────
 window.addEventListener('longPressStart', function() {
   if (isListening || $editScreen.classList.contains('visible')) return;
   isListening = true;
-  setStatus('Listening\u2026 release to add', true);
+  setStatus('Höre zu… loslassen zum Hinzufügen', true);
   if (typeof CreationVoiceHandler !== 'undefined') CreationVoiceHandler.postMessage('start');
 });
 window.addEventListener('longPressEnd', function() {

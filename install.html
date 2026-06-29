@@ -4,23 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Install Shopping List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #0e0e10; color: #fff;
-  font-family: -apple-system, sans-serif;
+  background: #E7E4DE; color: #1B1A17;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 32px;
+  -webkit-font-smoothing: antialiased;
 }
-h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #fff; }
-p { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 32px; text-align: center; }
+h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #1B1A17; letter-spacing: -.01em; }
+p { font-size: 14px; color: #8A867E; margin-bottom: 32px; text-align: center; }
 #qr { margin-bottom: 20px; }
-.url { font-size: 11px; color: rgba(255,255,255,0.25); word-break: break-all; text-align: center; max-width: 300px; }
+.url {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: #8A867E;
+  word-break: break-all; text-align: center; max-width: 300px;
+  letter-spacing: .04em;
+}
 </style>
 </head>
 <body>
-<h1>Shopping List</h1>
+<h1>Einkaufsliste</h1>
 <p>Scan with your Rabbit R1 to install.</p>
 <div id="qr"></div>
 <div class="url" id="url-label"></div>
@@ -30,20 +38,20 @@ p { font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 32px; text-al
   document.getElementById('url-label').textContent = creationUrl;
 
   var qrData = JSON.stringify({
-    title: "Shopping List",
+    title: "Einkaufsliste",
     url: creationUrl,
     description: "Voice-powered shopping list for the Rabbit R1",
     iconUrl: "",
-    themeColor: "#FDE047"
+    themeColor: "#D75A1E"
   });
 
   var qrCode = new QRCodeStyling({
     width: 260, height: 260,
     data: qrData,
-    dotsOptions: { color: "#ffffff", type: "rounded" },
-    backgroundOptions: { color: "#0e0e10" },
-    cornersSquareOptions: { color: "#FE5000", type: "extra-rounded" },
-    cornersDotOptions: { color: "#FE5000" }
+    dotsOptions: { color: "#1B1A17", type: "rounded" },
+    backgroundOptions: { color: "#E7E4DE" },
+    cornersSquareOptions: { color: "#D75A1E", type: "extra-rounded" },
+    cornersDotOptions: { color: "#D75A1E" }
   });
   qrCode.append(document.getElementById('qr'));
 </script>
